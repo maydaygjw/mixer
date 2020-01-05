@@ -11,11 +11,11 @@ import static org.gejunwen.mixer.utils.DebugUtils.p;
 
 public class EchoServer {
 
-    Selector selector;
-    volatile boolean isTerminated = false;
+    private Selector selector;
+    private volatile boolean isTerminated = false;
 
 
-    public EchoServer() throws IOException {
+    private EchoServer() throws IOException {
         selector = Selector.open();
         ServerSocketChannel channel = ServerSocketChannel.open();
         channel.socket().bind(new InetSocketAddress(9000));
@@ -23,26 +23,47 @@ public class EchoServer {
         channel.register(selector, SelectionKey.OP_ACCEPT);
     }
 
-    public void run() throws IOException {
+    private void run() {
         while (!isTerminated) {
-            selector.select();
+            try {
+                selector.select();
+            } catch (IOException e) {
+                closeSelector();
+            }
             Set keys = selector.selectedKeys();
             Iterator it = keys.iterator();
             while (it.hasNext()) {
                 SelectionKey key = (SelectionKey) it.next();
                 it.remove();
-                if (key.isAcceptable()) {
-                    doAccept(key);
-                } else if (key.isReadable()) {
-                    doRead(key);
+                try {
+                    if (key.isAcceptable()) {
+                        doAccept(key);
+                    } else if (key.isReadable()) {
+                        doRead(key);
+                    }
+                }catch(IOException e) {
+                    e.printStackTrace();
+                    key.cancel();
+                    try {
+                        key.channel().close();
+                    } catch (IOException ignored) {
+
+                    }
                 }
             }
+        }
+        closeSelector();
+    }
 
+    private void closeSelector() {
+        try {
+            this.selector.close();
+        }catch (IOException e) {
+            p("Error occur when close connection");
         }
     }
 
     private void doRead(SelectionKey key) throws IOException {
-        p("port: " + key.attachment());
         SocketChannel clientChannel = (SocketChannel) key.channel();
         ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
         if (clientChannel.read(byteBuffer) > 0) {
@@ -50,8 +71,8 @@ public class EchoServer {
             byte[] data = byteBuffer.array();
             String info = new String(data).trim();
             p("从客户端发送过来的消息是：" + info);
-            byteBuffer.clear();
             doWrite(clientChannel, byteBuffer);
+            byteBuffer.clear();
         } else {
             key.cancel();
             clientChannel.close();
@@ -62,16 +83,12 @@ public class EchoServer {
         channel.write(byteBuffer);
     }
 
-    private void doAccept(SelectionKey key) {
+    private void doAccept(SelectionKey key) throws IOException {
         ServerSocketChannel serverSocketChannel = (ServerSocketChannel) key.channel();
-        try {
-            SocketChannel channel = serverSocketChannel.accept();
-            channel.configureBlocking(false);
-            channel.register(this.selector, SelectionKey.OP_READ);
-            p("Accept connection from server");
-        } catch (IOException e) {
-            p("Error while accept client connection");
-        }
+        SocketChannel channel = serverSocketChannel.accept();
+        channel.configureBlocking(false);
+        channel.register(this.selector, SelectionKey.OP_READ);
+        p("Accept connection from server");
 
     }
 
