@@ -70,7 +70,7 @@ public class EchoServer {
             byteBuffer.flip();
             byte[] data = byteBuffer.array();
             String info = new String(data).trim();
-            p("从客户端发送过来的消息是：" + info);
+            p("message from client：" + info);
             doWrite(clientChannel, byteBuffer);
             byteBuffer.clear();
         } else {

@@ -57,7 +57,7 @@ public class EchoClient {
     private void doConnect(SelectionKey key) throws IOException {
         SocketChannel clientChannel = (SocketChannel) key.channel();
         clientChannel.register(selector, SelectionKey.OP_READ);
-        System.out.println("Connected to server:" + clientChannel);
+        p("Connected to server:" + clientChannel);
         clientChannel.finishConnect();
         clientChannel.configureBlocking(false);
         clientChannel.write(ByteBuffer.wrap("hello".getBytes()));

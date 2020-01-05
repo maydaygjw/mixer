@@ -3,23 +3,25 @@ package org.gejunwen.mixer.generics;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.gejunwen.mixer.utils.DebugUtils.p;
+
 public class Generics1 {
 
     private void inspect(List<Object> list) {
         for(Object o:list) {
-            System.out.println(o);
+            p(o);
         }
     }
 
     private void inspect2(List<?> list) {
         for(Object o:list) {
-            System.out.println(o);
+            p(o);
         }
     }
 
     private <T> T out(T... args) {
         for(T t: args) {
-            System.out.println(t);
+            p(t);
         }
 
         return args[0];
@@ -27,7 +29,7 @@ public class Generics1 {
 
     private void wildcard(List<? extends Number> list) {
         for(Number num: list) {
-            System.out.println(num.intValue());
+            p(num.intValue());
         }
     }
 

@@ -1,5 +1,7 @@
 package org.gejunwen.mixer.concurrent.stm;
 
+import static org.gejunwen.mixer.utils.DebugUtils.p;
+
 public final class STM {
 
     private STM() {
@@ -25,7 +27,7 @@ public final class STM {
         }
 
         long end = System.currentTimeMillis();
-        System.out.println("elasped time for txn: " + txn.getTxnId() + " is: " + (end - start));
+        p("elapsed time for txn: " + txn.getTxnId() + " is: " + (end - start));
     }
 
 

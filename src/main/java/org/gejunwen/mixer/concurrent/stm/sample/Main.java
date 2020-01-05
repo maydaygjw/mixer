@@ -1,5 +1,7 @@
 package org.gejunwen.mixer.concurrent.stm.sample;
 
+import static org.gejunwen.mixer.utils.DebugUtils.p;
+
 public class Main {
 
     public static void main(String[] args) {
@@ -30,7 +32,7 @@ class TransferTask extends Thread {
     @Override
     public void run() {
         from.safeTransfer(to, this.amt);
-        System.out.println("balance of from is: " + from.getBalance());
-        System.out.println("balance of to is: " + to.getBalance());
+        p("balance of from is: " + from.getBalance());
+        p("balance of to is: " + to.getBalance());
     }
 }

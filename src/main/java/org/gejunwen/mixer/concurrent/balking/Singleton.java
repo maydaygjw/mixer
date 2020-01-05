@@ -1,4 +1,5 @@
 package org.gejunwen.mixer.concurrent.balking;
+import static org.gejunwen.mixer.utils.DebugUtils.p;
 
 public class Singleton {
 
@@ -21,6 +22,6 @@ public class Singleton {
 
     public static void main(String[] args) {
         Singleton singleton = Singleton.getInstance();
-        System.out.println(singleton);
+        p(singleton);
     }
 }
