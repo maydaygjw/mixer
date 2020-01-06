@@ -1,7 +1,11 @@
 package org.gejunwen.mixer.concurrent.cow;
 
+import java.io.Serializable;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import static org.gejunwen.mixer.utils.DebugUtils.p;
 
 public class Main {
 
@@ -12,6 +16,14 @@ public class Main {
         routers.add(new Router("192.168.1.2", 8080, "user-service"));
         routers.add(new Router("192.168.1.1", 8081, "auth-service"));
         routers.add(new Router("192.168.1.2", 8081, "auth-service"));
+
+        routers.add(new Router("192.168.1.3", 8082, "joy-service"));
+        routers.add(new Router("192.168.1.4", 8082, "joy-service"));
+
+        System.out.println(routers);
+
+        routers.remove(new Router("192.168.1.3", 8082, "joy-service"));
+        routers.remove(new Router("192.168.1.4", 8082, "joy-service"));
 
         System.out.println(routers);
     }
@@ -54,10 +66,10 @@ class RouterTable {
         StringBuilder sb = new StringBuilder();
 
         for(Map.Entry<String, CustomCopyOnWriteSet<Router>> entry: routerTable.entrySet()) {
-            sb.append("Router table for interface: " + entry.getKey());
+            sb.append("Router table for interface: " + entry.getKey() + "\n");
             CustomCopyOnWriteSet<Router> set = entry.getValue();
             for(Router r: set) {
-                sb.append("++ip:" + r.getIp() + "|port:" + r.getPort());
+                sb.append("++ip:" + r.getIp() + "|port:" + r.getPort() + "\n");
             }
         }
 
@@ -65,7 +77,7 @@ class RouterTable {
     }
 }
 
-class Router {
+class Router implements Serializable {
     private String ip;
     private int port;
     private String iface;
@@ -85,6 +97,11 @@ class Router {
 
         Router other = (Router)obj;
         return other.getIface().equals(this.getIface()) && other.getIp().equals(this.getIp()) && other.getPort() == this.getPort();
+    }
+
+    @Override
+    public int hashCode() {
+        return this.ip.hashCode() + this.port;
     }
 
     public String getIp() {
