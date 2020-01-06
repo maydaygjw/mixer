@@ -3,7 +3,7 @@ import static org.gejunwen.mixer.utils.DebugUtils.p;
 
 public class Singleton {
 
-    private static Singleton singleton;
+    private static volatile Singleton singleton;
 
     private Singleton() {
 
