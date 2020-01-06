@@ -3,6 +3,8 @@ package org.gejunwen;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import static org.gejunwen.mixer.utils.DebugUtils.p;
+
 /**
  * Hello world!
  *
@@ -10,7 +12,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class App 
 {
     public static void main(String[] args) {
-        List<String> list = new CopyOnWriteArrayList<>();
+        Object[] array = new Object[10];
+        p(array[0]);
     }
 
 }
