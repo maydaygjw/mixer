@@ -35,7 +35,6 @@ public class GuardedSuspension {
 
 class WebRequestHandler {
 
-    private String resultMessage;
     private GuardedObject<String> go;
 
     public String service(String request) {
@@ -45,7 +44,7 @@ class WebRequestHandler {
         sendToMessageQueue(request);
 
         //等待消息队列回调
-        go = new GuardedObject<>(resultMessage);
+        go = new GuardedObject<>();
         return go.get(Objects::nonNull);
     }
 
@@ -61,10 +60,6 @@ class WebRequestHandler {
 class GuardedObject<T> {
 
     private T obj;
-
-    public GuardedObject(T obj) {
-        this.obj = obj;
-    }
 
     private final Lock lock = new ReentrantLock();
     private final Condition done = lock.newCondition();
