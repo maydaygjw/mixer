@@ -33,7 +33,7 @@ public class CustomCopyOnWriteSet<E> implements Iterable<E> {
 
         private Iterator<E> hashSetIterator;
 
-        public CustomCopyOnWriteSetIterator(Iterator<E> hashSetIterator) {
+        CustomCopyOnWriteSetIterator(Iterator<E> hashSetIterator) {
             this.hashSetIterator = hashSetIterator;
         }
 
